@@ -21,12 +21,12 @@ async function create(req, res) {
     res.status(201).json({ data });
 }
 // single table
-const read = (req, res)=> {
+function read  (req, res) {
     const { table: data } = res.locals;
     res.json({ data });
 }
 
-const update = (req, res)=>{
+function update  (req, res){
 
   if(res.locals.reservation.status === "seated"){
     return res.status(400).send({error: `reservation is already ${res.locals.reservation.status}`}) 
@@ -40,7 +40,7 @@ const update = (req, res)=>{
     .then(()=> {return tablesService.update(updatedTable)}).then((data)=>{return res.status(200).json({ data })});
 }
 
-const removeReservation = (req, res) => {
+function removeReservation  (req, res)  {
   if(!res.locals.table.reservation_id) return res.status(400).send({error: `${res.locals.table.table_id} is not occupied`})
   
   const updatedTable = {
@@ -49,7 +49,9 @@ const removeReservation = (req, res) => {
   };
 
   reservationsService.update({reservation_id: res.locals.table.reservation_id, status : "finished"})
-    .then(()=>tablesService.update(updatedTable)).then((data)=>res.status(200).json({ data }));   
+    .then((data)=>tablesService
+    .update(updatedTable))
+    .then((data)=>res.status(200).json({ data }));   
 }
 // check for res in db
 async function resCheck(req, res, next) {
@@ -92,8 +94,8 @@ const hasOnlyValidProperties = (req, res, next) =>{
 
 const hasRequiredProperties = hasProperties("table_name","capacity");
 
-const capacityCheck = (req, res, next) => {typeof req.body.data.capacity === 'number' ? next() : next({status: 400, message: 'capacity field must be a number'})}
-const nameCheck = (req, res, next) =>{
+function capacityCheck  (req, res, next)  {typeof req.body.data.capacity === 'number' ? next() : next({status: 400, message: 'capacity field must be a number'})}
+function nameCheck  (req, res, next) {
   if(req.body.data.table_name.length <2) return next({status: 400, message: 'table_name must be at least 2 characters'})
   next();
 }
