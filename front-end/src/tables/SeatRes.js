@@ -7,6 +7,7 @@ import ErrorAlert from "../layout/ErrorAlert";
 function SeatRes() {
   const history = useHistory();
   const {reservationId} = useParams();
+  // eslint-disable-next-line
   const [reservation, setReservation] = useState({})
   const [tables, setTables] = useState([]);
   const [selectedTable, setSelectedTable] = useState('');
@@ -33,24 +34,25 @@ function SeatRes() {
   }
   useEffect(fetchTables, [reservationId])
 
-  const handleChange = ({ target }) => {
+  const inputHandler = ({ target }) => {
     setSelectedTable(target.value);
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log("reservation people: ", reservation.people, "table cap: ", selectedTable.capacity)
-    console.log(selectedTable)
-    updateReservationStatus(reservationId, "seated");
+  const submitHandler = (event) => {
+    event.preventDefault();    
     updateTable(reservationId, selectedTable)
-      .then((data) => history.push("/"))
-      .catch(error=> console.log("error on line 36 tableSelection"))
+      .then((data) => {
+        history.push("/");
+        updateReservationStatus(reservationId, "seated");
+      })
+      .catch(setReservationError)
+
     
   };
 
 return (
   <div className="w-100">  
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={submitHandler}>
         <div className="form-group">
           <ErrorAlert error= {reservationError} />
           <ErrorAlert error = {tablesError} />
@@ -59,10 +61,10 @@ return (
             <select
               id="table_id"
               name="table_id"
-              onChange={handleChange}
+              onChange={inputHandler}
 
             >
-              <option value="">-- Select an Option --</option>
+              <option value="">-- Choose a Table --</option>
               {tables.map((table)=>{return <option value={table.table_id}>{table.table_name} - {table.capacity}</option>})}
             </select>
         </label>
