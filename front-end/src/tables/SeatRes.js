@@ -40,6 +40,7 @@ function SeatRes() {
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log("reservation people: ", reservation.people, "table cap: ", selectedTable.capacity)
+    console.log(selectedTable)
     updateReservationStatus(reservationId, "seated");
     updateTable(reservationId, selectedTable)
       .then((data) => history.push("/"))
