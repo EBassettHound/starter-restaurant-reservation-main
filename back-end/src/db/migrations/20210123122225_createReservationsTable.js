@@ -10,7 +10,7 @@ exports.up = function (knex) {
     table.string("status").notNullable().defaultTo("booked");
     table.timestamps(true, true);
   });
-};
+}; 
 
 exports.down = function (knex) {
   return knex.schema.dropTable("reservations");
